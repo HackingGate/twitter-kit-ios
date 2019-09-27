@@ -332,6 +332,10 @@ static TWTRTwitter *sharedTwitter;
                 if (error.domain == TWTRLogInErrorDomain && error.code == TWTRLogInErrorCodeCancelled) {
                     // The user tapped "Cancel"
                     completion(session, error);
+                } else if ([error.domain isEqual: @"NSPOSIXErrorDomain"] && error.code == 53) {
+                    // Workaround when Backgroud Task not available
+                    // Error Domain=NSPOSIXErrorDomain Code=53
+                    completion(session, nil);
                 } else {
                     typeof(weakViewController) strongViewController = weakViewController;
                     // There wasn't a Twitter app
