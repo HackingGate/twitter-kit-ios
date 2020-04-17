@@ -332,6 +332,10 @@ static TWTRTwitter *sharedTwitter;
                 if (error.domain == TWTRLogInErrorDomain && error.code == TWTRLogInErrorCodeCancelled) {
                     // The user tapped "Cancel"
                     completion(session, error);
+                } else if ([error.domain isEqual: @"NSPOSIXErrorDomain"] && error.code == 53) {
+                    // Workaround when Backgroud Task not available
+                    // Error Domain=NSPOSIXErrorDomain Code=53
+                    completion(session, nil);
                 } else {
                     typeof(weakViewController) strongViewController = weakViewController;
                     // There wasn't a Twitter app
@@ -381,9 +385,8 @@ static TWTRTwitter *sharedTwitter;
 {
     // Bug fixed: https://github.com/twitter-archive/twitter-kit-ios/issues/122
     // Use the code from HackingGate(github.com), https://github.com/touren/twitter-kit-ios/pull/2
-    NSString *sourceApplication = options[UIApplicationOpenURLOptionsSourceApplicationKey];
-    BOOL isSSOBundle = sourceApplication == nil ? [self.mobileSSO isSSOWithURL:url] : [self.mobileSSO isSSOWithSourceApplication:sourceApplication];
-    BOOL isWeb = sourceApplication == nil ? [self.mobileSSO isWebWithURL:url] : [self.mobileSSO isWebWithSourceApplication:sourceApplication];
+    BOOL isSSOBundle = [self.mobileSSO isSSOWithURL:url];
+    BOOL isWeb = [self.mobileSSO isWebWithURL:url];
 
     if (isSSOBundle) {
         [self.mobileSSO processRedirectURL:url];
@@ -404,9 +407,8 @@ static TWTRTwitter *sharedTwitter;
 - (void)scene:(UIScene *)scene openURLContexts:(nonnull NSSet<UIOpenURLContext *> *)URLContexts API_AVAILABLE(ios(13.0)) {
     for (UIOpenURLContext *context in URLContexts) {
         NSURL *url = context.URL;
-        NSString *sourceApplication = context.options.sourceApplication;
-        BOOL isSSOBundle = sourceApplication == nil ? [self.mobileSSO isSSOWithURL:url] : [self.mobileSSO isSSOWithSourceApplication:sourceApplication];
-        BOOL isWeb = sourceApplication == nil ? [self.mobileSSO isWebWithURL:url] : [self.mobileSSO isWebWithSourceApplication:sourceApplication];
+        BOOL isSSOBundle = [self.mobileSSO isSSOWithURL:url];
+        BOOL isWeb = [self.mobileSSO isWebWithURL:url];
 
         if (isSSOBundle) {
             [self.mobileSSO processRedirectURL:url];
