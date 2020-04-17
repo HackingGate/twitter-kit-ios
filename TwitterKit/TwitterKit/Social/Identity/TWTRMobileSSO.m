@@ -76,6 +76,7 @@
 
 - (BOOL)isSSOWithURL:(NSURL *)url
 {
+    if (url == nil) return NO;
     return [url.host containsString:@"secret="] &&
     [url.host containsString:@"secret="] &&
     [url.host containsString:@"username="] ;
@@ -83,6 +84,7 @@
 
 - (BOOL)isWebWithURL:(NSURL *)url
 {
+    if (url == nil) return NO;
     return [url.host isEqualToString:@"callback"];
 }
 

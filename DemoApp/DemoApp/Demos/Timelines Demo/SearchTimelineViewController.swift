@@ -30,8 +30,8 @@ class SearchTimelineViewController: TWTRTimelineViewController, DZNEmptyDataSetS
 
     func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString {
         let text = "Could not find Tweets.";
-        let attributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 18),
-                          NSAttributedStringKey.foregroundColor: UIColor.darkGray]
+        let attributes = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 18),
+                          NSAttributedString.Key.foregroundColor: UIColor.darkGray]
 
         return NSAttributedString(string: text, attributes: attributes)
     }
